@@ -1,0 +1,24 @@
+.rule-build:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "trigger" || $CI_PIPELINE_SOURCE == "web" && $ASG_NAME != null
+
+.build: &build
+  stage: build
+  image: <ecr url>/aws-kubectl:v1
+  script:
+    - |
+      [ -z "$ASG_NAME" ] || IFS=',' read -r -a LC_NAME <<< "ASG_NAME"
+      if (( ${#LC_NAME} )); then
+        for name in "${LC_NAME[@]}"
+        do
+          echo $name
+          echo "Create LC $LC_NAME"
+          ./test-devops.sh  $name
+        done
+      else
+        echo "Something went wrong"
+      fi
+      docker image tag $ASG_NAME
+      docker push <ecr url>/$LC_NAME
+  tags:
+    - dev-aws
