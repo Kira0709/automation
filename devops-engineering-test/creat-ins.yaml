@@ -1,20 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: posgresql-client
-  namespace: postgresql
-  annotations:
-    sidecar.istio.io/inject: "false"
+  name: ec2-new-instance
+  namespace: default
 spec:
   containers:
-  - name: posgresql-client
-    image: postgres:11-alpine
+  - name: ec2-new-instance
+    image: <ecr url>/ec2
     imagePullPolicy: IfNotPresent
-    resources:
-      # limits:
-      #   cpu: "500m"
-      #   memory: "512Mi"
-      requests:
-        cpu: "10m"
-        memory: "32Mi"
 
